@@ -1,5 +1,7 @@
 # --- QMIX specific parameters ---
 
+mac: "independent_mac" # Basic controller
+
 # use epsilon greedy action selector
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
@@ -22,8 +24,4 @@ mixing_embed_dim: 32
 hypernet_layers: 2
 hypernet_embed: 64
 
-name: "qmix_fc"
-
-# Agent settings
-agent: "fc"
-
+name: "qmix_nops"
