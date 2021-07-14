@@ -24,5 +24,6 @@ hypernet_embed: 64
 
 name: "qmix"
 
-use_tensorboard: True
+# Agent settings
+agent: "fc"
 
