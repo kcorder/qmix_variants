@@ -60,13 +60,15 @@ class EpisodeRunner:
                 "obs": [self.env.get_obs()]
             }
 
+            # inserts the transition data into a pre-allocated array of zeros at current timestep
             self.batch.update(pre_transition_data, ts=self.t)
 
             # Pass the entire batch of experiences up till now to the agents
             # Receive the actions for each agent at this timestep in a batch of size 1
             actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode)
 
-            reward, terminated, env_info = self.env.step(actions[0])
+            # reward, terminated, env_info = self.env.step(actions[0])
+            reward, terminated, env_info = self.env.step(actions.squeeze())
             episode_return += reward
 
             post_transition_data = {
