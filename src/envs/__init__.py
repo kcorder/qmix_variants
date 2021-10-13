@@ -2,9 +2,17 @@ from functools import partial
 from smac.env import MultiAgentEnv, StarCraft2Env
 import sys
 import os
+from gym.spaces import Discrete
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
-    return env(**kwargs)
+    # Preprocess kwargs
+    pass
+    # Make env
+    env_obj = env(**kwargs)
+    # Postprocess env
+    env_obj.action_space = Discrete(env_obj.n_actions)
+
+    return env_obj
 
 REGISTRY = {}
 REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)

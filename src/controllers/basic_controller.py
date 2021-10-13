@@ -17,7 +17,8 @@ class BasicMAC:
 
         if args.action_selector is not None:
             self.action_selector = action_REGISTRY[args.action_selector](args)
-
+        else:
+            self.action_selector = None
         self.hidden_states = None
 
     def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
