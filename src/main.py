@@ -20,7 +20,7 @@ ex = Experiment("pymarl")
 ex.logger = logger
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
-results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
+
 
 
 @ex.main
@@ -90,6 +90,8 @@ if __name__ == '__main__':
     # now add all the config to sacred
     ex.add_config(config_dict)
 
+    results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
+    results_path = results_path + f"/{alg_config['name']}/{env_config['env_args']['map_name']}"
     # Save to disk by default for sacred
     logger.info("Saving to FileStorageObserver in results/sacred.")
     file_obs_path = os.path.join(results_path, "sacred")
