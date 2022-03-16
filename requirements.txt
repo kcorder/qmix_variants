@@ -3,5 +3,6 @@ tensorboard==2.5.0
 sacred==0.8.2
 pettingzoo==1.5.0
 supersuit==2.3.1
-pyyaml
+pyyaml==5.4.1
 ipython
+tensorboard-logger==0.1.0
