@@ -4,7 +4,6 @@ import sys
 import os
 from gym.spaces import Discrete
 from envs.mpe_env import MPEEnv
-from envs.griddly_env import GriddlyEnv
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
     # Preprocess kwargs
@@ -19,7 +18,6 @@ def env_fn(env, **kwargs) -> MultiAgentEnv:
 REGISTRY = {}
 REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)
 REGISTRY["mpe"] = partial(env_fn, env=MPEEnv)
-REGISTRY["griddly"] = partial(env_fn, env=GriddlyEnv)
 
 if sys.platform == "linux":
     os.environ.setdefault("SC2PATH",
