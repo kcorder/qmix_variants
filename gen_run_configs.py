@@ -29,14 +29,13 @@ if __name__ == '__main__':
     global_options = ""
     config_dict = {
         "map": [env_config for env_config in [
-            "--env-config=smac with env_args.map_name=3m",
-            "--env-config=smac with env_args.map_name=2s3z",
-            "--env-config=smac with env_args.map_name=3s_vs_5z",
-            "--env-config=smac with env_args.map_name=corridor",
-            "--env-config=smac with env_args.map_name=2c_vs_64zg",
+            "--env-config=sc2 with env_args.map_name=3m",
+            "--env-config=sc2 with env_args.map_name=2s3z",
+            "--env-config=sc2 with env_args.map_name=3s_vs_5z",
+            "--env-config=sc2 with env_args.map_name=corridor",
+            "--env-config=sc2 with env_args.map_name=2c_vs_64zg",
             "--env-config=mpe with env_args.map_name=simple_spread",
             "--env-config=mpe with env_args.map_name=simple_reference",
-            # "--env-config=mpe with env_args.map_name=simple_spread", # TODO: what are all envs?
         ] if args.env in env_config],
         "config": [
             "--config=qmix",
