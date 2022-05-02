@@ -8,7 +8,8 @@ import secrets
 import stat
 
 parser = argparse.ArgumentParser(description="Dispatch a list of python jobs from a given file to a PBS cluster")
-parser.add_argument("file", type=argparse.FileType())
+parser.add_argument("file", type=argparse.FileType(),
+                    help="path to python commands file to run")
 parser.add_argument("--conda", default="pymarl", type=str, help="Name of the targeted anaconda environment")
 parser.add_argument("--email", default="kcorder@udel.edu", type=str)
 parser.add_argument("--queue", default="standard", type=str, choices=["standard","debug","interactive"])
@@ -104,7 +105,9 @@ def _prototype(template_idx):
 source $HOME/anaconda3/bin/activate {args.conda}
 {f"module load {' '.join(args.modules)}" if len(args.modules) > 0 else ""}
 
-aprun -n {len(jobs)} {aprun_line_filename} {job_list_filename}
+cd $PBS_O_WORKDIR  # where file submitted (current directory) 
+echo "Executing from directory: $PWD"  
+aprun -n {len(jobs)} $PWD/{aprun_line_filename} $PWD/{job_list_filename}
 """
     return SBATCH_PROTOTYPE
 
