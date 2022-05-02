@@ -95,7 +95,6 @@ def _prototype(template_idx):
 #PBS -q {args.queue}
 #PBS -N {job_name}
 #PBS -j oe 
-#PBS -o log/{job_name}.$PBS_JOBID
 #PBS -M {args.email}
 #PBS -m abe 
 #PBS -l walltime={args.timelimit}:00:00
@@ -108,6 +107,7 @@ source $HOME/anaconda3/bin/activate {args.conda}
 cd $PBS_O_WORKDIR  # where file submitted (current directory) 
 echo "Executing from directory: $PWD"  
 aprun -n {len(jobs)} $PWD/{aprun_line_filename} $PWD/{job_list_filename}
+mv {job_name}.o$PBS_JOBID log/
 """
     return SBATCH_PROTOTYPE
 
