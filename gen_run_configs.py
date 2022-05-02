@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--num-seeds", type=int, default=5)
-    parser.add_argument("--filename", type=str, default="run_strs.txt")
+    parser.add_argument("--filename", type=str, default="qmix_runs.txt")
     parser.add_argument("--alg-config", type=str, default=None,
                         help="Which algorithm config file to run. No value runs all alg configs.")
     parser.add_argument("--env", type=str, default="env",

@@ -95,7 +95,7 @@ def _prototype(template_idx):
 #PBS -q {args.queue}
 #PBS -N {job_name}
 #PBS -j oe 
-#PBS -o log/$PBS_JOBNAME.$PBS_JOBID
+#PBS -o log/{job_name}.$PBS_JOBID
 #PBS -M {args.email}
 #PBS -m abe 
 #PBS -l walltime={args.timelimit}:00:00
