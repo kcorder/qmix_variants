@@ -57,8 +57,7 @@ if __name__ == '__main__':
     run_strs = []
     exe_str = "python -O main.py"
     for i, args_str in enumerate(config_strs):
-        run_strs.append(f"{exe_str} {global_options} {args_str} &\n")
-        run_strs.append("sleep 1 \n")
+        run_strs.append(f"{exe_str} {global_options} {args_str} \n")
 
     # write file with commands
     with open(args.filename, 'w') as fd:
