@@ -12,11 +12,10 @@ parser.add_argument("file", type=argparse.FileType())
 parser.add_argument("--conda", default="pymarl", type=str, help="Name of the targeted anaconda environment")
 parser.add_argument("--email", default="kcorder@udel.edu", type=str)
 parser.add_argument("--queue", default="standard", type=str, choices=["standard","debug","interactive"])
-parser.add_argument("--name", default=None, type=str, help="Name that will be displayed in squeue. Default: file name")
+parser.add_argument("--name", default=None, type=str, help="Name of the job. Default: file name")
 parser.add_argument("--gpus", default=0, type=int, help="Requested GPUs PER job")
 parser.add_argument("--jobs-per-node", default=4, type=int, help="how many runs can fit on a single node")
 parser.add_argument("--timelimit", default=72, type=int, help="Requested hour limit PER job")
-parser.add_argument("--throttling", default=None, type=int, help="Launch only this many jobs concurrently")
 # parser.add_argument("--exclude", default=None, type=str, help="Exclude malfunctioning nodes. Should be a node name.")
 parser.add_argument(
     "--modules", default=[], nargs="+", type=str, help="An optional list of strings of module names to be loaded"

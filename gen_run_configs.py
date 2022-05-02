@@ -24,6 +24,8 @@ if __name__ == '__main__':
                         help="Which algorithm config file to run. No value runs all alg configs.")
     parser.add_argument("--env", type=str, default="env",
                         help="Which env or scenario to run. No value runs all envs/scenarios.")
+    parser.add_argument("--main-file", type=str, default="src/main.py",
+                        help="where to find main file relative to CWD")
     args = parser.parse_args()
 
     global_options = ""
@@ -55,7 +57,7 @@ if __name__ == '__main__':
     print(*config_strs, sep='\n')
     print("num unique configs =", len(config_strs))
     run_strs = []
-    exe_str = "python -O main.py"
+    exe_str = f"python -O {args.main_file}"
     for i, args_str in enumerate(config_strs):
         run_strs.append(f"{exe_str} {global_options} {args_str} \n")
 
