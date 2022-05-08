@@ -105,7 +105,7 @@ source $HOME/anaconda3/bin/activate {args.conda}
 cd $PBS_O_WORKDIR  # where file submitted (current directory) 
 echo "Executing from directory: $PWD"  
 aprun -n {len(jobs)} -N {min(len(jobs), args.jobs_per_node)} $PWD/{aprun_line_filename} $PWD/{job_list_filename}
-mv {job_name}.o$PBS_JOBID log/
+mv {job_name}.o* log/
 """
     return SBATCH_PROTOTYPE
 
