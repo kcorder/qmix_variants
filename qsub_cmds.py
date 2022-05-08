@@ -15,7 +15,7 @@ parser.add_argument("--email", default="kcorder@udel.edu", type=str)
 parser.add_argument("--queue", default="standard", type=str, choices=["standard","debug","interactive"])
 parser.add_argument("--name", default=None, type=str, help="Name of the job. Default: file name")
 parser.add_argument("--gpus", default=0, type=int, help="Requested GPUs PER job")
-parser.add_argument("--jobs-per-node", default=4, type=int, help="how many runs can fit on a single node")
+parser.add_argument("--jobs-per-node", default=8, type=int, help="how many runs can fit on a single node")
 parser.add_argument("--timelimit", default=72, type=int, help="Requested hour limit PER job")
 # parser.add_argument("--exclude", default=None, type=str, help="Exclude malfunctioning nodes. Should be a node name.")
 parser.add_argument(
@@ -55,17 +55,17 @@ aprun_line_filename = ".aprun_line.sh"
 if not os.path.exists(aprun_line_filename) or not os.path.isfile(aprun_line_filename):
     aprun_line_contents = """#!/bin/sh 
     
-    cmds_file=$1 
-    line_num=$ALPS_APP_PE
-    line_num=$((line_num+1)) # ALPS_APP_PE is 0-indexed; add 1 for line num 
-    echo $line_num 
-    
-    line=`head -$line_num $cmds_file | tail -1` 
-    echo $line 
-    eval "$line" 
-    
-    wait 
-    """
+cmds_file=$1 
+line_num=$ALPS_APP_PE
+line_num=$((line_num+1)) # ALPS_APP_PE is 0-indexed; add 1 for line num 
+echo $line_num 
+
+line=`head -$line_num $cmds_file | tail -1` 
+echo $line 
+eval "$line" 
+
+wait 
+"""
     with open(aprun_line_filename, "w") as fd:
         fd.write(aprun_line_contents)
     file_mode = os.stat(aprun_line_filename).st_mode
@@ -80,10 +80,8 @@ if not os.path.exists("log"):
 MAX_ARRAY_SIZE = 500
 num_template_to_launch = 1 + len(jobs) // MAX_ARRAY_SIZE
 
-################################################################
 num_nodes = math.ceil(len(jobs) / args.jobs_per_node)
 
-################################################################
 
 def _prototype(template_idx):
     if num_template_to_launch > 1:
@@ -99,14 +97,14 @@ def _prototype(template_idx):
 #PBS -m abe 
 #PBS -l walltime={args.timelimit}:00:00
 
-#PBS -l select={num_nodes}:{"ncpus=22:mpiprocs=22:ngpus="+str(args.gpus) if args.gpus else "ncpus=44:mpiprocs=44"}
+#PBS -l select={num_nodes}:{"ncpus=22:mpiprocs=1:ngpus="+str(args.gpus) if args.gpus else "ncpus=44:mpiprocs=1"}
 
 source $HOME/anaconda3/bin/activate {args.conda}
 {f"module load {' '.join(args.modules)}" if len(args.modules) > 0 else ""}
 
 cd $PBS_O_WORKDIR  # where file submitted (current directory) 
 echo "Executing from directory: $PWD"  
-aprun -n {len(jobs)} $PWD/{aprun_line_filename} $PWD/{job_list_filename}
+aprun -n {len(jobs)} -N {min(len(jobs), args.jobs_per_node)} $PWD/{aprun_line_filename} $PWD/{job_list_filename}
 mv {job_name}.o$PBS_JOBID log/
 """
     return SBATCH_PROTOTYPE
