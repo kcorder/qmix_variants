@@ -1,7 +1,9 @@
 from envs import REGISTRY as env_REGISTRY
 from functools import partial
 from components.episode_buffer import EpisodeBatch
+import torch as th
 import numpy as np
+import copy
 
 
 class EpisodeRunner:
@@ -12,7 +14,11 @@ class EpisodeRunner:
         self.batch_size = self.args.batch_size_run
         assert self.batch_size == 1
 
-        self.env = env_REGISTRY[self.args.env](**self.args.env_args)
+        if 'sc2' in self.args.env:
+            self.env = env_REGISTRY[self.args.env](**self.args.env_args)
+        else:
+            self.env = env_REGISTRY[self.args.env](env_args=self.args.env_args, args=args)
+
         self.episode_limit = self.env.episode_limit
         self.t = 0
 
@@ -45,7 +51,7 @@ class EpisodeRunner:
         self.env.reset()
         self.t = 0
 
-    def run(self, test_mode=False):
+    def run(self, test_mode=False, **kwargs):
         self.reset()
 
         terminated = False
@@ -62,14 +68,27 @@ class EpisodeRunner:
 
             # inserts the transition data into a pre-allocated array of zeros at current timestep
             self.batch.update(pre_transition_data, ts=self.t)
-
-            # Pass the entire batch of experiences up till now to the agents
-            # Receive the actions for each agent at this timestep in a batch of size 1
-            actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode)
+            if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+                actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env,
+                                                      test_mode=test_mode,
+                                                      explore=(not test_mode))
+            else:
+                actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode)
 
             # reward, terminated, env_info = self.env.step(actions[0])
-            reward, terminated, env_info = self.env.step(actions.squeeze())
-            episode_return += reward
+            if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+                actions = th.argmax(actions, dim=-1).long()
+
+            if self.args.env in ["mpe"]:
+                cpu_actions = copy.deepcopy(actions).to("cpu").numpy()
+                reward, terminated, env_info = self.env.step(cpu_actions[0])
+                if isinstance(reward, (list, tuple)):
+                    assert (reward[1:] == reward[:-1]), "reward has to be cooperative!"
+                    reward = reward[0]
+                episode_return += reward
+            else:
+                reward, terminated, env_info = self.env.step(actions.squeeze())
+                episode_return += reward
 
             post_transition_data = {
                 "actions": actions,
@@ -89,7 +108,15 @@ class EpisodeRunner:
         self.batch.update(last_data, ts=self.t)
 
         # Select actions in the last stored state
-        actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode)
+        if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+            actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode,
+                                              explore=(not test_mode))
+        else:
+            actions = self.mac.select_actions(self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode)
+
+        if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+            actions = th.argmax(actions, dim=-1).long()
+
         self.batch.update({"actions": actions}, ts=self.t)
 
         cur_stats = self.test_stats if test_mode else self.train_stats
