@@ -14,10 +14,7 @@ class EpisodeRunner:
         self.batch_size = self.args.batch_size_run
         assert self.batch_size == 1
 
-        if 'sc2' in self.args.env:
-            self.env = env_REGISTRY[self.args.env](**self.args.env_args)
-        else:
-            self.env = env_REGISTRY[self.args.env](env_args=self.args.env_args, args=args)
+        self.env = env_REGISTRY[self.args.env](**self.args.env_args)
 
         self.episode_limit = self.env.episode_limit
         self.t = 0
@@ -79,16 +76,8 @@ class EpisodeRunner:
             if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
                 actions = th.argmax(actions, dim=-1).long()
 
-            if self.args.env in ["mpe"]:
-                cpu_actions = copy.deepcopy(actions).to("cpu").numpy()
-                reward, terminated, env_info = self.env.step(cpu_actions[0])
-                if isinstance(reward, (list, tuple)):
-                    assert (reward[1:] == reward[:-1]), "reward has to be cooperative!"
-                    reward = reward[0]
-                episode_return += reward
-            else:
-                reward, terminated, env_info = self.env.step(actions.squeeze())
-                episode_return += reward
+            reward, terminated, env_info = self.env.step(actions.squeeze())
+            episode_return += reward
 
             post_transition_data = {
                 "actions": actions,

@@ -16,6 +16,7 @@ class MPEEnv(MultiAgentEnv):
             obs_last_action=False,
             seed=None,
             obs_instead_of_state=True,
+            state_last_action=False,
     ):
         self.map_name = map_name
         self.episode_limit = episode_limit
