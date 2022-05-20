@@ -45,6 +45,7 @@ if __name__ == '__main__':
             "--config=qmix_nops",
             "--config=qmix_fc_nops",
             "--config=vdn",
+            "--config=vdn_nops",
             "--config=facmac",
             "--config=facmac_fc",
             "--config=facmac_nops",
