@@ -45,8 +45,10 @@ if __name__ == '__main__':
             "--config=qmix_nops",
             "--config=qmix_fc_nops",
             "--config=vdn",
-            # "--config=facmaddpg",
-            # "--config=facmaddpg", # TODO: finish these configs
+            "--config=facmac",
+            "--config=facmac_fc",
+            "--config=facmac_nops",
+            "--config=facmac_fc_nops",
         ] if not args.alg_config else [f"--config={args.alg_config}"],
         "seed": ["" for seed in range(args.num_seeds)],
     }
