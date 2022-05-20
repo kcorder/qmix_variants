@@ -52,7 +52,6 @@ test_greedy: True
 test_interval: 2000
 test_nepisode: 20
 testing_on: True
-t_max: 5000000
 save_model: False
 save_model_interval: 2000
 verbose: False
