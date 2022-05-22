@@ -49,8 +49,6 @@ target_update_interval: 200
 target_update_mode: 'hard'
 target_update_tau: 0.001
 test_greedy: True
-test_interval: 2000
-test_nepisode: 20
 testing_on: True
 save_model: False
 save_model_interval: 2000
