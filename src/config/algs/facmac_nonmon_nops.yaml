@@ -61,6 +61,6 @@ agent_return_logits: False
 q_embed_dim: 1
 mask_before_softmax: True
 
-mac: basic_mac
-name: "facmac_nonmon"
+mac: independent_mac
+name: "facmac_nonmon_nops"
 agent: rnn

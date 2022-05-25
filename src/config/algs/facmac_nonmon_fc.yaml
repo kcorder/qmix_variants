@@ -62,5 +62,5 @@ q_embed_dim: 1
 mask_before_softmax: True
 
 mac: basic_mac
-name: "facmac_nonmon"
-agent: rnn
+name: "facmac_nonmon_fc"
+agent: fc
