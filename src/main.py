@@ -87,11 +87,21 @@ if __name__ == '__main__':
     config_dict = recursive_dict_update(config_dict, env_config)
     config_dict = recursive_dict_update(config_dict, alg_config)
 
+    # change name for TB files
+    map_name = env_config['env_args']['map_name']
+    for p in params:
+        if "env_args.map_name=" in p:
+            map_name = p.split("=")[1]
+            break
+    new_tb_name = f"{config_dict['name']}__{map_name}"
+    config_dict['name'] = new_tb_name
+
+    results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
+    results_path = results_path + f"/{alg_config['name']}/{map_name}"
+
     # now add all the config to sacred
     ex.add_config(config_dict)
 
-    results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
-    results_path = results_path + f"/{alg_config['name']}/{env_config['env_args']['map_name']}"
     # Save to disk by default for sacred
     logger.info("Saving to FileStorageObserver in results/sacred.")
     file_obs_path = os.path.join(results_path, "sacred")
