@@ -21,4 +21,4 @@ learner: "q_learner"
 double_q: True
 mixer: "vdn"
 
-name: "vdn"
+name: "vdn_nops"
