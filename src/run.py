@@ -24,6 +24,7 @@ def run(_run, _config, _log):
 
     args = SN(**_config)
     args.device = "cuda" if args.use_cuda else "cpu"
+    args.run_id = _run._id
 
     # setup loggers
     logger = Logger(_log)
@@ -37,8 +38,9 @@ def run(_run, _config, _log):
     # configure tensorboard logger
 
     authkey = secrets.token_urlsafe(5)
-    unique_token = "{}__{}__{}".format(
+    unique_token = "{}__id={}__{}__{}".format(
         args.name,
+        args.run_id,
         datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
         authkey
     )
